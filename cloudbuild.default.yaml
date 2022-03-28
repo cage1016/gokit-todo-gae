@@ -10,18 +10,18 @@ steps:
         git submodule update --init --recursive
 
   - name: gcr.io/cloud-builders/yarn
-    dir: website
+    dir: default
     args:
       - install
 
   - name: gcr.io/cloud-builders/yarn
-    dir: website
+    dir: default
     args:
       - build:gae
 
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
-    dir: website
+    dir: default
     args:
       - -exc
       - |
