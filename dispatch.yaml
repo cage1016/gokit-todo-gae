@@ -2,7 +2,7 @@ dispatch:
   - url: "*/favicon.ico"
     module: default
 
-  - url: "*/api/v1/todo/items*"
+  - url: "*/items*"
     module: api
 
   - url: "gcp-10-mins.appspot.com/"
