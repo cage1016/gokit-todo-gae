@@ -1,0 +1,49 @@
+timeout: 1200s # 20m
+options:
+
+steps:
+  - id: pull mappingsvc clean base cache
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -exc
+      - |
+        git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+        git submodule sync --recursive
+        git submodule update --init --recursive
+
+  - name: gcr.io/cloud-builders/yarn
+    dir: website
+    args:
+      - install
+
+  - name: gcr.io/cloud-builders/yarn
+    dir: website
+    args:
+      - build:gae
+
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    dir: website
+    args:
+      - -exc
+      - |
+        sha=$(git rev-parse --short HEAD)
+
+        cat > app.yaml << EOF
+        service: default
+        runtime: nodejs16
+        handlers:
+          - url: /static
+            static_dir: build/static
+          - url: /(.*\.(json|ico|js))$
+            static_files: build/\1
+            upload: build/.*\.(json|ico|js)$
+          - url: .*
+            static_files: build/index.html
+            upload: build/index.html
+        EOF
+
+        gcloud app deploy --version=${sha} app.yaml -q
+
+        echo "deploy succeeded."

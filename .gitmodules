@@ -1,3 +1,6 @@
 [submodule "api"]
 	path = api
 	url = https://github.com/cage1016/gokit-todo
+[submodule "default"]
+	path = default
+	url = https://github.com/cage1016/gokit-todo-frontend
