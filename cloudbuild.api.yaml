@@ -1,6 +1,3 @@
-timeout: 1200s # 20m
-options:
-
 steps:
   - id: pull mappingsvc clean base cache
     name: gcr.io/cloud-builders/gcloud
