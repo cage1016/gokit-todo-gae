@@ -1,0 +1,40 @@
+timeout: 1200s # 20m
+options:
+
+steps:
+  - id: pull mappingsvc clean base cache
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -exc
+      - |
+        git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+        git submodule sync --recursive
+        git submodule update --init --recursive
+
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    dir: api
+    args:
+      - -exc
+      - |
+        sha=$(git rev-parse --short HEAD)
+
+        cat > app.yaml << EOF
+        service: api
+        runtime: go116
+        main: ./cmd/todo
+
+        env_variables:
+          QS_DB_HOST: k8s-testbed-20210510:asia-east1:todo2
+          QS_DB_PORT: 5432
+          QS_DB_USER: postgres
+          QS_DB_PASS: password
+          QS_DB: todo
+          QS_HTTP_PORT: 8080
+          QS_DB_DRIVER_NAME: cloudsqlpostgres  
+        EOF
+
+        gcloud app deploy --version=${sha} app.yaml -q
+
+        echo "deploy succeeded."
