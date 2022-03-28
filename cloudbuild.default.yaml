@@ -8,6 +8,7 @@ steps:
         git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
         git submodule sync --recursive
         git submodule update --init --recursive
+        git submodule foreach git pull origin master
 
   - name: gcr.io/cloud-builders/yarn
     dir: default
