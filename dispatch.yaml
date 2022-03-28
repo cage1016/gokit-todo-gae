@@ -1,0 +1,9 @@
+dispatch:
+  - url: "*/favicon.ico"
+    module: default
+
+  - url: "*/api/v1/todo/items*"
+    module: api
+
+  - url: "gcp-10-mins.appspot.com/"
+    module: default
