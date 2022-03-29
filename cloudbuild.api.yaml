@@ -23,15 +23,24 @@ steps:
         main: ./cmd/todo
 
         env_variables:
-          QS_DB_HOST: k8s-testbed-20210510:asia-east1:todo2
-          QS_DB_PORT: 5432
-          QS_DB_USER: postgres
-          QS_DB_PASS: password
-          QS_DB: todo
-          QS_HTTP_PORT: 8080
-          QS_DB_DRIVER_NAME: cloudsqlpostgres  
+          QS_DB_HOST: $_QS_DB_HOST
+          QS_DB_PORT: $_QS_DB_PORT
+          QS_DB_USER: $_QS_DB_USER
+          QS_DB_PASS: $_QS_DB_PASS
+          QS_DB: $_QS_DB
+          QS_HTTP_PORT: $_QS_HTTP_PORT
+          QS_DB_DRIVER_NAME: $_QS_DB_DRIVER_NAME
         EOF
 
         gcloud app deploy --version=${sha} app.yaml -q
 
         echo "deploy succeeded."
+
+substitutions:
+  _QS_DB_HOST: k8s-testbed-20210510:asia-east1:todo3
+  _QS_DB_PORT: 5432
+  _QS_DB_USER: postgres
+  _QS_DB_PASS: password
+  _QS_DB: todo
+  _QS_HTTP_PORT: 8080
+  _QS_DB_DRIVER_NAME: cloudsqlpostgres
